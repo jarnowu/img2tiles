@@ -29,33 +29,42 @@ export const createTilesZip = async (imageData: ImageData, config: TileConfig): 
           throw new Error('Failed to get canvas context');
         }
         
-        const tileWidth = Math.floor(img.naturalWidth / config.cols);
-        const tileHeight = Math.floor(img.naturalHeight / config.rows);
-        
-        // Security check: Validate tile dimensions
-        if (tileWidth < 1 || tileHeight < 1) {
-          throw new Error('Calculated tile dimensions are too small. Please reduce the number of rows or columns.');
-        }
-        
-        canvas.width = tileWidth;
-        canvas.height = tileHeight;
-        
+        const rowPositions = [0, ...config.rowSplits, 1];
+        const colPositions = [0, ...config.colSplits, 1];
+
         let tileIndex = 1;
-        
-        for (let row = 0; row < config.rows; row++) {
-          for (let col = 0; col < config.cols; col++) {
+
+        for (let r = 0; r < config.rows; r++) {
+          const srcY = Math.floor(rowPositions[r] * img.naturalHeight);
+          const nextY = Math.floor(rowPositions[r + 1] * img.naturalHeight);
+          const tileHeight = nextY - srcY;
+
+          for (let c = 0; c < config.cols; c++) {
+            const srcX = Math.floor(colPositions[c] * img.naturalWidth);
+            const nextX = Math.floor(colPositions[c + 1] * img.naturalWidth);
+            const tileWidth = nextX - srcX;
+
+            if (tileWidth < 1 || tileHeight < 1) {
+              throw new Error('Calculated tile dimensions are too small. Adjust grid lines.');
+            }
+
+            canvas.width = tileWidth;
+            canvas.height = tileHeight;
+
             // Clear canvas
             ctx.clearRect(0, 0, tileWidth, tileHeight);
-            
-            // Calculate source coordinates
-            const srcX = col * tileWidth;
-            const srcY = row * tileHeight;
-            
+
             // Draw the tile
             ctx.drawImage(
               img,
-              srcX, srcY, tileWidth, tileHeight,
-              0, 0, tileWidth, tileHeight
+              srcX,
+              srcY,
+              tileWidth,
+              tileHeight,
+              0,
+              0,
+              tileWidth,
+              tileHeight
             );
             
             // Convert to blob with validation
