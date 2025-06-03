@@ -1,7 +1,7 @@
 
 # img2tiles
 
-A modern web application that allows you to split images into tiles and download them as a ZIP file. Perfect for creating image puzzles, preparing assets for game development, or breaking down large images into manageable pieces.
+A light-weight application that allows you to split images into tiles and download them as a ZIP file. Perfect for creating image puzzles, preparing assets for game development, or breaking down large images into manageable pieces.
 
 ![Image Tile Splitter](https://img.shields.io/badge/React-18.3.1-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-latest-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-latest-blue)
 
@@ -73,8 +73,8 @@ A modern web application that allows you to split images into tiles and download
 
 1. Clone the repository:
 ```bash
-git clone <YOUR_GIT_URL>
-cd <YOUR_PROJECT_NAME>
+git clone https://github.com/jarnowu/img2tiles.git
+cd img2tiles
 ```
 
 2. Install dependencies:
@@ -103,12 +103,6 @@ This application works in all modern browsers that support:
 - File API
 - ES6+ JavaScript features
 - CSS Grid and Flexbox
-
-Tested on:
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
 
 ## Privacy & Security
 
