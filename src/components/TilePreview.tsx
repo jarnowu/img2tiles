@@ -83,10 +83,10 @@ export const TilePreview: React.FC<TilePreviewProps> = ({ imageData, config }) =
       </div>
       
       <div className="text-sm text-slate-600 space-y-1">
-        <p>Original: {imageData.width}×{imageData.height}px</p>
-        <p>Grid: {config.rows}×{config.cols} ({config.rows × config.cols} tiles)</p>
+        <p>Original: {imageData.width}x{imageData.height}px</p>
+        <p>Grid: {config.rows}x{config.cols} ({config.rows * config.cols} tiles)</p>
         <p>
-          Each tile: {Math.floor(imageData.width / config.cols)}×{Math.floor(imageData.height / config.rows)}px
+          Each tile: {Math.floor(imageData.width / config.cols)}x{Math.floor(imageData.height / config.rows)}px
         </p>
       </div>
     </div>

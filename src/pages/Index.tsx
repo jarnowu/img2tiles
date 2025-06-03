@@ -127,11 +127,11 @@ const Index = () => {
 
                     <div className="bg-slate-100 p-3 rounded-md">
                       <p className="text-sm text-slate-600">
-                        Total tiles: <span className="font-semibold">{tileConfig.rows × tileConfig.cols}</span>
+                        Total tiles: <span className="font-semibold">{tileConfig.rows * tileConfig.cols}</span>
                       </p>
                       <p className="text-sm text-slate-600">
                         Tile size: <span className="font-semibold">
-                          {Math.floor(imageData.width / tileConfig.cols)}×{Math.floor(imageData.height / tileConfig.rows)}px
+                          {Math.floor(imageData.width / tileConfig.cols)}x{Math.floor(imageData.height / tileConfig.rows)}px
                         </span>
                       </p>
                     </div>

@@ -52,7 +52,7 @@ export const TileProcessor: React.FC<TileProcessorProps> = ({
       </Button>
       
       <div className="text-sm text-slate-600 space-y-1">
-        <p>• Will create {config.rows × config.cols} individual {config.outputFormat.toUpperCase()} files</p>
+        <p>• Will create {config.rows * config.cols} individual {config.outputFormat.toUpperCase()} files</p>
         <p>• Files will be named systematically (tile_001, tile_002, etc.)</p>
         <p>• All tiles will be packaged in a single ZIP file</p>
       </div>
