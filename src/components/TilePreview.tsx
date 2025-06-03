@@ -1,14 +1,17 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ImageData, TileConfig } from '@/pages/Index';
 
 interface TilePreviewProps {
   imageData: ImageData;
   config: TileConfig;
+  onConfigChange: (config: Partial<TileConfig>) => void;
 }
-
-export const TilePreview: React.FC<TilePreviewProps> = ({ imageData, config }) => {
+export const TilePreview: React.FC<TilePreviewProps> = ({ imageData, config, onConfigChange }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState<{width: number; height: number}>({ width: 0, height: 0 });
+  const [dragging, setDragging] = useState<{type: 'row'|'col'; index: number} | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -19,75 +22,104 @@ export const TilePreview: React.FC<TilePreviewProps> = ({ imageData, config }) =
 
     const img = new Image();
     img.onload = () => {
-      // Calculate display size while maintaining aspect ratio
       const maxDisplayWidth = 400;
       const maxDisplayHeight = 400;
-      
+
       let displayWidth = img.naturalWidth;
       let displayHeight = img.naturalHeight;
-      
+
       if (displayWidth > maxDisplayWidth) {
         displayHeight = (displayHeight * maxDisplayWidth) / displayWidth;
         displayWidth = maxDisplayWidth;
       }
-      
+
       if (displayHeight > maxDisplayHeight) {
         displayWidth = (displayWidth * maxDisplayHeight) / displayHeight;
         displayHeight = maxDisplayHeight;
       }
-      
+
       canvas.width = displayWidth;
       canvas.height = displayHeight;
-      
-      // Draw the image
+      setDimensions({ width: displayWidth, height: displayHeight });
+
       ctx.drawImage(img, 0, 0, displayWidth, displayHeight);
-      
-      // Draw grid overlay
-      ctx.strokeStyle = 'rgba(59, 130, 246, 0.8)';
-      ctx.lineWidth = 2;
-      
-      const tileWidth = displayWidth / config.cols;
-      const tileHeight = displayHeight / config.rows;
-      
-      // Draw vertical lines
-      for (let i = 1; i < config.cols; i++) {
-        ctx.beginPath();
-        ctx.moveTo(i * tileWidth, 0);
-        ctx.lineTo(i * tileWidth, displayHeight);
-        ctx.stroke();
-      }
-      
-      // Draw horizontal lines
-      for (let i = 1; i < config.rows; i++) {
-        ctx.beginPath();
-        ctx.moveTo(0, i * tileHeight);
-        ctx.lineTo(displayWidth, i * tileHeight);
-        ctx.stroke();
-      }
-      
-      // Draw border
-      ctx.strokeStyle = 'rgba(59, 130, 246, 1)';
-      ctx.strokeRect(0, 0, displayWidth, displayHeight);
     };
-    
+
     img.src = imageData.url;
-  }, [imageData, config]);
+  }, [imageData]);
+
+  useEffect(() => {
+    const handleMove = (e: PointerEvent) => {
+      if (!dragging || !containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      if (dragging.type === 'col') {
+        let pos = (e.clientX - rect.left) / rect.width;
+        const splits = [...config.colSplits];
+        const min = dragging.index === 0 ? 0.05 : splits[dragging.index - 1] + 0.05;
+        const max = dragging.index === splits.length - 1 ? 0.95 : splits[dragging.index + 1] - 0.05;
+        pos = Math.min(Math.max(pos, min), max);
+        splits[dragging.index] = pos;
+        onConfigChange({ colSplits: splits });
+      } else {
+        let pos = (e.clientY - rect.top) / rect.height;
+        const splits = [...config.rowSplits];
+        const min = dragging.index === 0 ? 0.05 : splits[dragging.index - 1] + 0.05;
+        const max = dragging.index === splits.length - 1 ? 0.95 : splits[dragging.index + 1] - 0.05;
+        pos = Math.min(Math.max(pos, min), max);
+        splits[dragging.index] = pos;
+        onConfigChange({ rowSplits: splits });
+      }
+    };
+
+    const stopDrag = () => setDragging(null);
+
+    window.addEventListener('pointermove', handleMove);
+    window.addEventListener('pointerup', stopDrag);
+    return () => {
+      window.removeEventListener('pointermove', handleMove);
+      window.removeEventListener('pointerup', stopDrag);
+    };
+  }, [dragging, config, onConfigChange]);
 
   return (
     <div className="space-y-4">
       <div className="bg-white rounded-lg p-4 border border-slate-200">
-        <canvas
-          ref={canvasRef}
-          className="max-w-full border border-slate-200 rounded"
-        />
+        <div
+          ref={containerRef}
+          style={{ width: dimensions.width, height: dimensions.height }}
+          className="relative mx-auto select-none"
+        >
+          <canvas
+            ref={canvasRef}
+            className="w-full h-full border border-slate-200 rounded"
+          />
+          {dimensions.width > 0 && (
+            <>
+              {config.colSplits.map((pos, i) => (
+                <div
+                  key={`col-${i}`}
+                  onPointerDown={() => setDragging({ type: 'col', index: i })}
+                  style={{ left: `${pos * 100}%` }}
+                  className="absolute top-0 bottom-0 w-1 -ml-0.5 bg-blue-500 cursor-ew-resize"
+                />
+              ))}
+              {config.rowSplits.map((pos, i) => (
+                <div
+                  key={`row-${i}`}
+                  onPointerDown={() => setDragging({ type: 'row', index: i })}
+                  style={{ top: `${pos * 100}%` }}
+                  className="absolute left-0 right-0 h-1 -mt-0.5 bg-blue-500 cursor-ns-resize"
+                />
+              ))}
+              <div className="absolute inset-0 border border-blue-500 pointer-events-none" />
+            </>
+          )}
+        </div>
       </div>
-      
+
       <div className="text-sm text-slate-600 space-y-1">
         <p>Original: {imageData.width}x{imageData.height}px</p>
         <p>Grid: {config.rows}x{config.cols} ({config.rows * config.cols} tiles)</p>
-        <p>
-          Each tile: {Math.floor(imageData.width / config.cols)}x{Math.floor(imageData.height / config.rows)}px
-        </p>
       </div>
     </div>
   );

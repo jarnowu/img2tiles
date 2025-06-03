@@ -15,15 +15,30 @@ export interface ImageData {
 export interface TileConfig {
   rows: number;
   cols: number;
+  /**
+   * Positions of horizontal split lines as fractions (0-1) of image height.
+   * Length should be rows - 1.
+   */
+  rowSplits: number[];
+  /**
+   * Positions of vertical split lines as fractions (0-1) of image width.
+   * Length should be cols - 1.
+   */
+  colSplits: number[];
   outputFormat: 'png' | 'jpg';
   quality: number;
 }
 
 const Index = () => {
   const [imageData, setImageData] = useState<ImageData | null>(null);
+  const createSplits = (count: number) =>
+    Array.from({ length: count - 1 }, (_, i) => (i + 1) / count);
+
   const [tileConfig, setTileConfig] = useState<TileConfig>({
     rows: 3,
     cols: 3,
+    rowSplits: createSplits(3),
+    colSplits: createSplits(3),
     outputFormat: 'png',
     quality: 90
   });
@@ -35,6 +50,24 @@ const Index = () => {
 
   const handleConfigChange = (config: Partial<TileConfig>) => {
     setTileConfig(prev => ({ ...prev, ...config }));
+  };
+
+  const handleRowsChange = (rows: number) => {
+    const newRows = Math.max(1, Math.min(20, rows));
+    setTileConfig(prev => ({
+      ...prev,
+      rows: newRows,
+      rowSplits: createSplits(newRows)
+    }));
+  };
+
+  const handleColsChange = (cols: number) => {
+    const newCols = Math.max(1, Math.min(20, cols));
+    setTileConfig(prev => ({
+      ...prev,
+      cols: newCols,
+      colSplits: createSplits(newCols)
+    }));
   };
 
   return (
@@ -76,7 +109,7 @@ const Index = () => {
                           min="1"
                           max="20"
                           value={tileConfig.rows}
-                          onChange={(e) => handleConfigChange({ rows: parseInt(e.target.value) || 1 })}
+                          onChange={(e) => handleRowsChange(parseInt(e.target.value) || 1)}
                           className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
@@ -89,7 +122,7 @@ const Index = () => {
                           min="1"
                           max="20"
                           value={tileConfig.cols}
-                          onChange={(e) => handleConfigChange({ cols: parseInt(e.target.value) || 1 })}
+                          onChange={(e) => handleColsChange(parseInt(e.target.value) || 1)}
                           className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
@@ -131,7 +164,14 @@ const Index = () => {
                       </p>
                       <p className="text-sm text-slate-600">
                         Tile size: <span className="font-semibold">
-                          {Math.floor(imageData.width / tileConfig.cols)}x{Math.floor(imageData.height / tileConfig.rows)}px
+                          {(() => {
+                            const equalRows = tileConfig.rowSplits.every((v, i) => Math.abs(v - (i + 1) / tileConfig.rows) < 0.001);
+                            const equalCols = tileConfig.colSplits.every((v, i) => Math.abs(v - (i + 1) / tileConfig.cols) < 0.001);
+                            if (equalRows && equalCols) {
+                              return `${Math.floor(imageData.width / tileConfig.cols)}x${Math.floor(imageData.height / tileConfig.rows)}px`;
+                            }
+                            return 'Variable';
+                          })()}
                         </span>
                       </p>
                     </div>
@@ -163,6 +203,7 @@ const Index = () => {
                 <TilePreview
                   imageData={imageData}
                   config={tileConfig}
+                  onConfigChange={handleConfigChange}
                 />
               </Card>
             )}

@@ -12,6 +12,7 @@ A modern web application that allows you to split images into tiles and download
 - **Easy Image Upload**: Drag & drop or click to upload JPG, PNG, or WEBP images
 - **Flexible Grid Configuration**: Split images into any grid size (1x1 to 20x20)
 - **Real-time Preview**: See exactly how your image will be split with an interactive grid overlay
+- **Draggable Grid Lines**: Adjust the position of rows and columns directly in the preview
 - **Multiple Output Formats**: Export tiles as PNG (lossless) or JPG (with quality control)
 - **Batch Download**: All tiles are automatically packaged into a single ZIP file
 - **Responsive Design**: Works perfectly on desktop and mobile devices
@@ -25,15 +26,16 @@ A modern web application that allows you to split images into tiles and download
    - The image will be displayed with its dimensions
 
 2. **Configure Your Tiles**
-   - Set the number of rows and columns for your grid
+ - Set the number of rows and columns for your grid
+  - Drag the grid lines in the preview to set custom tile sizes
    - Choose output format (PNG for lossless quality, JPG for smaller file sizes)
    - For JPG format, adjust the quality slider (10-100%)
    - View the total number of tiles and individual tile dimensions
 
 3. **Preview Your Split**
-   - The preview shows your image with a grid overlay
-   - Each section represents one tile that will be created
-   - Grid lines show exactly where the image will be split
+ - The preview shows your image with a grid overlay
+ - Each section represents one tile that will be created
+  - Grid lines show exactly where the image will be split and can be dragged to adjust
 
 4. **Create and Download**
    - Click "Create Tiles & Download ZIP"
