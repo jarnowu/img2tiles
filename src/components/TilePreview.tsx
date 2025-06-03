@@ -83,35 +83,38 @@ export const TilePreview: React.FC<TilePreviewProps> = ({ imageData, config, onC
 
   return (
     <div className="space-y-4">
-      <div
-        ref={containerRef}
-        className="bg-white rounded-lg p-4 border border-slate-200 relative select-none"
-      >
-        <canvas
-          ref={canvasRef}
-          className="max-w-full border border-slate-200 rounded"
-        />
-        {dimensions.width > 0 && (
-          <>
-            {config.colSplits.map((pos, i) => (
-              <div
-                key={`col-${i}`}
-                onPointerDown={() => setDragging({ type: 'col', index: i })}
-                style={{ left: `${pos * 100}%` }}
-                className="absolute top-0 bottom-0 w-1 -ml-0.5 bg-blue-500 cursor-ew-resize"
-              />
-            ))}
-            {config.rowSplits.map((pos, i) => (
-              <div
-                key={`row-${i}`}
-                onPointerDown={() => setDragging({ type: 'row', index: i })}
-                style={{ top: `${pos * 100}%` }}
-                className="absolute left-0 right-0 h-1 -mt-0.5 bg-blue-500 cursor-ns-resize"
-              />
-            ))}
-            <div className="absolute inset-0 border border-blue-500 pointer-events-none" />
-          </>
-        )}
+      <div className="bg-white rounded-lg p-4 border border-slate-200">
+        <div
+          ref={containerRef}
+          style={{ width: dimensions.width, height: dimensions.height }}
+          className="relative mx-auto select-none"
+        >
+          <canvas
+            ref={canvasRef}
+            className="w-full h-full border border-slate-200 rounded"
+          />
+          {dimensions.width > 0 && (
+            <>
+              {config.colSplits.map((pos, i) => (
+                <div
+                  key={`col-${i}`}
+                  onPointerDown={() => setDragging({ type: 'col', index: i })}
+                  style={{ left: `${pos * 100}%` }}
+                  className="absolute top-0 bottom-0 w-1 -ml-0.5 bg-blue-500 cursor-ew-resize"
+                />
+              ))}
+              {config.rowSplits.map((pos, i) => (
+                <div
+                  key={`row-${i}`}
+                  onPointerDown={() => setDragging({ type: 'row', index: i })}
+                  style={{ top: `${pos * 100}%` }}
+                  className="absolute left-0 right-0 h-1 -mt-0.5 bg-blue-500 cursor-ns-resize"
+                />
+              ))}
+              <div className="absolute inset-0 border border-blue-500 pointer-events-none" />
+            </>
+          )}
+        </div>
       </div>
 
       <div className="text-sm text-slate-600 space-y-1">
