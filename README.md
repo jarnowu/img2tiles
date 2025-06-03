@@ -1,5 +1,5 @@
 
-# Image Tile Splitter
+# img2tiles
 
 A modern web application that allows you to split images into tiles and download them as a ZIP file. Perfect for creating image puzzles, preparing assets for game development, or breaking down large images into manageable pieces.
 
@@ -131,8 +131,6 @@ Tested on:
 
 ## Contributing
 
-This project was built with [Lovable](https://lovable.dev), an AI-powered web development platform. 
-
 To contribute:
 1. Fork the repository
 2. Create a feature branch
@@ -162,7 +160,3 @@ If you encounter any issues or have questions:
 - PNG and JPG output formats
 - ZIP file download with systematic naming
 - Responsive design for all devices
-
----
-
-Built with ❤️ using [Lovable](https://lovable.dev)
