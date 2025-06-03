@@ -5,6 +5,8 @@ A modern web application that allows you to split images into tiles and download
 
 ![Image Tile Splitter](https://img.shields.io/badge/React-18.3.1-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-latest-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-latest-blue)
 
+![Tiles Preview](public/img2tiles.png)
+
 ## Features
 
 - **Easy Image Upload**: Drag & drop or click to upload JPG, PNG, or WEBP images
