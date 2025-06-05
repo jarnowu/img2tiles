@@ -3,7 +3,7 @@ import JSZip from 'jszip';
 import { ImageData, TileConfig } from '@/pages/Index';
 
 // Maximum canvas size to prevent memory issues
-const MAX_CANVAS_SIZE = 4096;
+const MAX_CANVAS_SIZE = 8192;
 
 export const createTilesZip = async (imageData: ImageData, config: TileConfig): Promise<void> => {
   return new Promise((resolve, reject) => {
