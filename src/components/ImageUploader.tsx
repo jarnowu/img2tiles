@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { Upload, Image as ImageIcon, AlertTriangle } from 'lucide-react';
 import { ImageData } from '@/pages/Index';
 import { validateImageFile } from '@/utils/security';
+import { toast } from '@/components/ui/use-toast';
 
 interface ImageUploaderProps {
   onImageUpload: (imageData: ImageData) => void;
@@ -12,6 +13,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload }) =
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const SAFE_DIMENSION = 4096;
 
   const handleImageLoad = useCallback(async (file: File) => {
     setIsLoading(true);
@@ -30,6 +32,14 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload }) =
       const img = new Image();
       
       img.onload = () => {
+        if (img.naturalWidth > SAFE_DIMENSION || img.naturalHeight > SAFE_DIMENSION) {
+          toast({
+            title: 'Large Image Warning',
+            description: `Dimensions exceed ${SAFE_DIMENSION}x${SAFE_DIMENSION}. Processing may be unstable.`,
+            variant: 'destructive'
+          });
+        }
+
         onImageUpload({
           file,
           url,
