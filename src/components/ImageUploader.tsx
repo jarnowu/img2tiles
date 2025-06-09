@@ -28,6 +28,14 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload }) =
         return;
       }
 
+      if (validation.warning) {
+        toast({
+          title: 'Large File Warning',
+          description: validation.warning,
+          variant: 'destructive'
+        });
+      }
+
       const url = URL.createObjectURL(file);
       const img = new Image();
       
@@ -127,7 +135,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload }) =
                 {isDragging ? 'Drop your image here' : 'Upload an image'}
               </p>
               <p className="text-sm text-slate-500">
-                Drag & drop or click to select • JPG, PNG, WEBP • Max 50MB
+                Drag & drop or click to select • JPG, PNG, WEBP
               </p>
             </div>
           </div>

@@ -1,5 +1,5 @@
 
-// Maximum file size in bytes (50MB)
+// Recommended maximum file size in bytes (50MB)
 export const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 // Allowed MIME types
@@ -26,13 +26,14 @@ const FILE_SIGNATURES: Record<string, number[][]> = {
 export interface FileValidationResult {
   isValid: boolean;
   error?: string;
+  warning?: string;
 }
 
 export const validateFileSize = (file: File): FileValidationResult => {
   if (file.size > MAX_FILE_SIZE) {
     return {
-      isValid: false,
-      error: `File size exceeds maximum allowed size of ${Math.round(MAX_FILE_SIZE / (1024 * 1024))}MB`
+      isValid: true,
+      warning: `File size exceeds ${Math.round(MAX_FILE_SIZE / (1024 * 1024))}MB. Processing may be slow.`
     };
   }
   return { isValid: true };
@@ -91,7 +92,7 @@ export const validateImageFile = async (file: File): Promise<FileValidationResul
   if (!sizeValidation.isValid) {
     return sizeValidation;
   }
-  
+
   // Check MIME type
   const mimeValidation = validateMimeType(file);
   if (!mimeValidation.isValid) {
@@ -103,6 +104,10 @@ export const validateImageFile = async (file: File): Promise<FileValidationResul
   if (!signatureValidation.isValid) {
     return signatureValidation;
   }
-  
+
+  if (sizeValidation.warning) {
+    return { isValid: true, warning: sizeValidation.warning };
+  }
+
   return { isValid: true };
 };
