@@ -122,7 +122,6 @@ This application works in all modern browsers that support:
 
 ## Limitations
 
-- Maximum allowed image size: 8192x8192 pixels (images larger than 4096x4096 will trigger a warning)
 - Maximum grid size: 20x20 tiles
 - Supported formats: JPG, PNG, WEBP input; PNG, JPG output
 - Requires modern browser with Canvas API support
