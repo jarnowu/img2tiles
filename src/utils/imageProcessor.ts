@@ -2,20 +2,12 @@
 import JSZip from 'jszip';
 import { ImageData, TileConfig } from '@/pages/Index';
 
-// Maximum canvas size to prevent memory issues
-const MAX_CANVAS_SIZE = 8192;
-
 export const createTilesZip = async (imageData: ImageData, config: TileConfig): Promise<void> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     
     img.onload = async () => {
       try {
-        // Security check: Validate image dimensions
-        if (img.naturalWidth > MAX_CANVAS_SIZE || img.naturalHeight > MAX_CANVAS_SIZE) {
-          throw new Error(`Image dimensions too large. Maximum allowed size is ${MAX_CANVAS_SIZE}x${MAX_CANVAS_SIZE} pixels.`);
-        }
-        
         // Security check: Validate tile configuration
         if (config.rows < 1 || config.rows > 20 || config.cols < 1 || config.cols > 20) {
           throw new Error('Invalid tile configuration. Rows and columns must be between 1 and 20.');
